@@ -10,8 +10,9 @@
 	LD R1, INT
 	STR R1, R0, #0	; set up the keyboard interrupt vector table entry
 	LD R1, MASK
-	ST R1, KBSR	; enable keyboard interrupts; set bit 14 of KBSR 
-	AND R1, R1, #0	; clears R1	
+	STI R1, KBSR	; enable keyboard interrupts; set bit 14 of KBSR 
+	AND R1, R1, #0	; clears R1
+	
 ; R1 = FIRST NUCLEOTIDE
 ; R2 = SECOND NUCLEOTIDE
 ; R3 = THIRD NUCLEOTIDE
