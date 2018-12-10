@@ -16,13 +16,35 @@
 ; R1 = FIRST NUCLEOTIDE
 ; R2 = SECOND NUCLEOTIDE
 ; R3 = THIRD NUCLEOTIDE
-WAITING	LDI R4, KBSR
-	ADD R0, R4, #0
+WAITING	LDI R4, FLAG
 	BRz WAITING
 	AND R0, R0, #0		; CLEARS KBSR
-	ST R0, KBSR
+	STI R0, FLAG
+	TRAP x21
+	JSR CHECKA		; check if A
+	ADD R0,R0, #0
+	BRnp WAITING		; if not an A branch to waiting
+FNDA	LDI R4, FLAG		; poll FLAG again
+	BRz FNDA		
+	AND R0, R0, #0
+	STI R0, FLAG
+	JSR CHECKU		; check U	
+	BRz AU
+	JSR CHECKA		;if A branch to found A
+	ADD R0, R0, #0
+	BRz FNDA
+	BRnzp WAITING		; if not a then branch to waiting to check for A
+AU	JSR CHECKG		;if G print a | and start checking for stop sequence
+	ADD R0, R0, #0
+	BRz START
+	JSR CHECKA
+	ADD R0, R0, #0
+	BRz FNDA
+	BRnp WAITING		; ME AND MATTHEW WENT OVER THIS SO IM IN THE PROCESS OF CHANGING IT, i'LL EXPLAIN IT ONCE IM DONE
+
+
 	JSR FILLREG
-	ADD R0, R1, #0		; LOADS FIRST LETTER TO R0,  CHEK FOR START CODON
+	ADD R0, R1, #0		; LOADS FIRST LETTER TO R0,  CHECK FOR START CODON
 	JSR CHECKA		; CHECK IF AUG
 	ADD R0, R0, #0
 	BRnp WAITING
@@ -74,11 +96,13 @@ UA	ADD R0, R3, #0
 	BRz STOP		; UAA STOP
 	BRnzp GO
 KBSR 	.FILL xFE00
+KBDR 	.FILL xFE02
 LINE 	.FILL x7C
 IVT	.FILL x180
 INT	.FILL x2600
 ORI 	.FILL X4000
-MASK	.FILL x4000			
+MASK	.FILL x4000	
+FLAG	.FILL x4600		
 STOP	TRAP x25
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,9 +132,7 @@ MOR 	ADD R1, R2, #0		; MORE THAN 3 SO MOVE REGISTERS
 	
 CHECKU
 
-	LD R4, U 
-	NOT R4, R4 
-	ADD R4, R4, #1 
+	LD R0, U 
 	ADD R0, R4, R0 
 	BRz EXIT2 
 	BRnp storeneg1 
@@ -121,19 +143,17 @@ EXIT1
 	LD R0, 0 
 EXIT2
 	RET
-U	.FILL x0055
-A	.FILL x0041
-G	.FILL x0047
-neg1	.FILL xFFFF
+U	.FILL x-0055
+A	.FILL x-0041
+G	.FILL x-0047
+neg1	.FILL x-FFFF
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 CHECKA
 
-	LD R4, A
-	NOT R4, R4 
-	ADD R4, R4, #1 
+	LD R0, A 
 	ADD R0, R4, R0 
 	BRz EXIT21
 	BRnp storeneg1_2
@@ -151,10 +171,8 @@ EXIT22
 
 CHECKG
 
-	LD R4, G 
-	NOT R4, R4 
-	ADD R4, R4, #1 
-	ADD R0, R4, R0 
+	LD R0, G 
+	NOT R4, R4  
 	BRz EXIT31
 	BRnp storeneg1_3
 storeneg1_3
