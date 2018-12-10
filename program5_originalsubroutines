@@ -1,0 +1,148 @@
+;startoveragain	JSR CHECK_UAG 
+;ADD R3, R3, #0
+;BRz STOP 
+;JSR CHECK_UAA 
+;ADD R3, R3, #0
+;BRz STOP 
+;JSR CHECK_UGA 
+;ADD R3, R3, #0
+;BRz STOP 
+;BRnp startoveragain
+
+;STOP
+;LD R0, line 
+;TRAP x22
+;TRAP x25 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+CHECK_UAG 
+
+ST R7, SAVER7UAG 
+LD R4, U
+TRAP x20 
+NOT R4, R4
+ADD R4, R4, #1 
+ADD R5, R0, R4 
+BRz checkA 
+BRnp exitthissubroutine 
+
+checkA
+LD R4, A 
+TRAP x20 
+NOT R4, R4 
+ADD R4, R4, #1 
+ADD R5, R0, R4 
+BRz checkG
+BRnp exitthissubroutine 
+
+checkG 
+LD R4, G 
+TRAP x20
+NOT R4, R4
+ADD R4, R4, #1 
+ADD R5, R0, R4
+BRz stopcode
+BRnp exitthissubroutine 
+
+
+stopcode
+AND R3, R3, #0
+BRnzp exitthissubroutine
+
+exitthissubroutine 
+LD R7, SAVER7UAG 
+RET 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+CHECK_UAA 
+
+ST R7, SAVER7UAA 
+LD R4, U 
+TRAP x20 
+NOT R4, R4
+ADD R4, R4, #1 
+ADD R5, R0, R4 
+BRz checkAagain2
+BRnp exitthissubroutine2 
+
+checkAagain2
+LD R4, A 
+TRAP x20 
+NOT R4, R4 
+ADD R4, R4, #1 
+ADD R5, R0, R4 
+BRz checkAagain
+BRnp exitthissubroutine2
+
+checkAagain
+LD R4, A 
+TRAP x20 
+NOT R4, R4 
+ADD R4, R4, #1 
+ADD R5, R0, R4 
+BRz stopcode2 
+BRnp exitthissubroutine2 
+
+stopcode2
+AND R3, R3, #0
+BRnzp exitthissubroutine2
+
+exitthissubroutine2 
+LD R7, SAVER7UAA 
+RET 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+CHECK_UGA 
+
+ST R7, SAVER7UGA 
+LD R4, U 
+TRAP x20 
+NOT R4, R4
+ADD R4, R4, #1
+ADD R5, R0, R4
+BRz checkGagain 
+BRnp exitthissubroutine3 
+
+checkGagain 
+LD R4, G
+TRAP x20 
+NOT R4, R4
+ADD R4, R4, #1 
+ADD R5, R0, R4
+BRz checkAagain3 
+
+checkAagain3 
+LD R4, A 
+NOT R4, R4
+ADD R4, R4, #1 
+ADD R5, R4, R0
+BRz stopcode3 
+BRnp exitthissubroutine3 
+
+
+
+stopcode3 
+AND R3, R3, #0 
+BRnzp exitthissubroutine3 
+
+exitthissubroutine3 
+LD R7, SAVER7UGA 
+RET
+
+U	.FILL x0055
+A	.FILL x0041
+G	.FILL x0047
+SAVER7UAG 	.BLKW 1
+SAVER7UAA 	.BLKW 1 
+SAVER7UGA	.BLKW 1 
+STACK		.FILL x4600
+line		.FILL x007C 
+neg1 		.FILL xFFFF
+
+
+		.END
