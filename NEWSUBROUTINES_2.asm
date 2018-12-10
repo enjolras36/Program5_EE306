@@ -19,7 +19,7 @@
 ; start of actual program
 
 checkU
-LD R7, SAVEU 
+ST R7, SAVEU 
 LD R4, U 
 NOT R4, R4 
 ADD R4, R4, #1 
@@ -47,7 +47,7 @@ neg1	.FILL xFFFF
 
 
 checkA
-LD R7, SAVEA 
+ST R7, SAVEA 
 LD R4, A
 NOT R4, R4 
 ADD R4, R4, #1 
@@ -68,7 +68,7 @@ RET
 
 
 checkG 
-LD R7, SAVEG 
+ST R7, SAVEG 
 LD R4, G 
 NOT R4, R4 
 ADD R4, R4, #1 
