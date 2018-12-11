@@ -13,9 +13,6 @@
 	STI R1, KBSR	; enable keyboard interrupts; set bit 14 of KBSR 
 	AND R1, R1, #0	; clears R1
 	
-; R1 = FIRST NUCLEOTIDE
-; R2 = SECOND NUCLEOTIDE
-; R3 = THIRD NUCLEOTIDE
 WAITING	LDI R4, FLAG
 	BRz WAITING
 	ADD R0, R4, #0
@@ -105,28 +102,6 @@ ORI 	.FILL X4000
 MASK	.FILL x4000	
 FLAG	.FILL x4600		
 STOP	TRAP x25
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-FILLREG
-; INPUT: R4 HOLDS LETTER
-; OUTPUTS: R1, R2, R3, HOLD LIST OF LAST THREE NUCS
-	ADD R1, R1, #0		; CHECKS IF FIRST NUC 
-	BRnp SEC
-	ADD R1, R4, #0
-	BRnzp MOR
-SEC	ADD R2, R2, #0		; CHECKS IF SEC NUC
-	BRnp THIR
-	ADD R2, R4, #0
-	BRnzp MOR
-THIR	ADD R3, R3, #0		; CHECKS IF THIRDNUC
-	BRnp MOR
-	ADD R3, R4, #0
-MOR 	ADD R1, R2, #0		; MORE THAN 3 SO MOVE REGISTERS
-	ADD R2, R3, #0
-	ADD R3, R4, #0
-	RET
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
