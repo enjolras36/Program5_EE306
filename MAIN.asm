@@ -19,7 +19,6 @@ WAITING	LDI R4, FLAG
 	TRAP x21
 	AND R0, R0, #0		; CLEARS KBSR
 	STI R0, FLAG
-	TRAP x21
 	JSR CHECKA		; check if A
 	ADD R0,R0, #0
 	BRnp WAITING		; if not an A branch to waiting
@@ -39,7 +38,7 @@ AU	LDI R4, FLAG		; poll FLAG again
 	BRz AU
 	ADD R0, R4 #0
 	TRAP x21
-	ADD R0, R0, #0
+	AND R0, R0, #0
 	STI R0, FLAG
 	JSR CHECKG		;if G print a | and start checking for stop sequence
 	ADD R0, R0, #0
@@ -53,30 +52,30 @@ A2	JSR CHECKA
 	BRnp WAITING		; ME AND MATTHEW WENT OVER THIS SO IM IN THE PROCESS OF CHANGING IT, i'LL EXPLAIN IT ONCE IM DONE
 START	
 	LDI R4, FLAG		; poll FLAG again
-	BRz AU
+	BRz START
 	ADD R0, R4 #0
 	TRAP x21
-	ADD R0, R0, #0
+	AND R0, R0, #0
 	STI R0, FLAG
 	JSR CHECKU
 	ADD R0, R0, #0
 	BRnp START
-	LDI R4, FLAG		; poll FLAG again
-	BRz AU
+UA1	LDI R4, FLAG		; poll FLAG again
+	BRz UA1
 	ADD R0, R4 #0
 	TRAP x21
-	ADD R0, R0, #0
+	AND R0, R0, #0
 	STI R0, FLAG
 	JSR CHECKG		; CHECK FOR G 
 	ADD R0, R0, #0
 	BRz UGA
 	JSR CHECKA		; CHECK FOR A
 	ADD R0, R0, #0 
-	LDI R4, FLAG		; poll FLAG again
-	BRz AU
+UA2	LDI R4, FLAG		; poll FLAG again
+	BRz UA2
 	ADD R0, R4 #0
 	TRAP x21
-	ADD R0, R0, #0
+	AND R0, R0, #0
 	STI R0, FLAG
 	JSR CHECKG		; CHECK FOR G, UAG
 	ADD R0, R0, #0
@@ -86,8 +85,8 @@ START
 	BRz STOP
 	BRnp START
 UGA	LDI R4, FLAG		; poll FLAG again
-	BRz AU
-	ADD R0, R4 #0
+	BRz UGA
+	AND R0, R4 #0
 	TRAP x21
 	ADD R0, R0, #0
 	STI R0, FLAG
