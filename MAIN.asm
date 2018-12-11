@@ -116,7 +116,7 @@ storeneg1
 	LD R0, neg1
 	BRnzp EXIT2
 EXIT1 
-	LD R0, 0 
+	AND R0, R0, #0
 EXIT2
 	RET
 U	.FILL x-0055
@@ -138,7 +138,7 @@ storeneg1_2
 	BRnzp EXIT22
 
 EXIT21
-	LD R0, 0 
+	AND R0, R0, #0 
 EXIT22
 	RET
 
@@ -148,7 +148,7 @@ EXIT22
 CHECKG
 
 	LD R0, G 
-	NOT R4, R4  
+	ADD R0, R4, R0 
 	BRz EXIT31
 	BRnp storeneg1_3
 storeneg1_3
@@ -156,7 +156,7 @@ storeneg1_3
 	BRnzp EXIT32
 
 EXIT31
-	LD R0, 0 
+	AND R0, R0, #0 
 EXIT32	
 	RET	
 .END
